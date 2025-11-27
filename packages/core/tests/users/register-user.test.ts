@@ -1,24 +1,8 @@
-export interface CreateUser {
-  create(input: CreateUser.Input): Promise<void>;
-}
-export namespace CreateUser {
-  export type Input = {
-    name: string;
-    email: string;
-    password: string;
-  };
-}
-
-export class RegisterUser {
-  constructor(private userRepo: CreateUser) {}
-
-  async execute(input: CreateUser.Input): Promise<void> {
-    await this.userRepo.create(input);
-  }
-}
+import { CreateUser } from "@/contracts/repos";
+import { RegisterUserUseCase } from "@/users/use-case";
 
 describe("REGISTER USER", () => {
-  let sut: RegisterUser;
+  let sut: RegisterUserUseCase;
   let userRepo: CreateUser;
 
   beforeAll(() => {
@@ -28,7 +12,7 @@ describe("REGISTER USER", () => {
   });
 
   beforeEach(async () => {
-    sut = new RegisterUser(userRepo);
+    sut = new RegisterUserUseCase(userRepo);
   });
 
   it("should call CreateUser with correct input", async () => {
