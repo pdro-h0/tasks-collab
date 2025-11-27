@@ -9,7 +9,8 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   moduleNameMapper:{
-    "^@repo/(.*)$": "<rootDir>/../$1",
-    "@/tests/(.*)": "<rootDir>/tests/$1",
+    // "^@repo/(.+)$": "<rootDir>/../$1",
+    "@/tests/(.+)": "<rootDir>/tests/$1",
+    "@/(.+)":       "<rootDir>/src/$1",
   }
 };
