@@ -1,6 +1,6 @@
 import { HashPassword } from "@/contracts/gateways";
 import { CreateUser, GetUser } from "@/contracts/repos";
-import { RegisterUserUseCase } from "@/users/use-case";
+import { RegisterUserUseCase } from "@/application/use-case";
 
 describe("REGISTER USER", () => {
   let sut: RegisterUserUseCase;
@@ -12,6 +12,7 @@ describe("REGISTER USER", () => {
     userRepo = {
       create: jest.fn(),
       getByEmail: jest.fn().mockResolvedValue(null),
+      getById: jest.fn(),
     };
     passwordHasher = {
       hash: jest.fn().mockResolvedValue("any_hashed_password"),

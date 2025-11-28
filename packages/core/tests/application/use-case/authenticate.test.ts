@@ -1,6 +1,6 @@
 import { ComparePassword } from "@/contracts/gateways";
 import { GetUser, AuthenticateUser } from "@/contracts/repos";
-import { AuthenticateUseCase } from "@/users/use-case";
+import { AuthenticateUseCase } from "@/application/use-case";
 
 describe("AUTHENTICATE", () => {
   let sut: AuthenticateUseCase;
@@ -16,6 +16,7 @@ describe("AUTHENTICATE", () => {
         email: "any_email",
         password: "any_password",
       }),
+      getById: jest.fn(),
     };
     passwordHasher = {
       compare: jest.fn().mockResolvedValue(true),
