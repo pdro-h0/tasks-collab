@@ -54,6 +54,8 @@ describe("REGISTER USER", () => {
       name: "any_name",
       email: "any_email",
       password: "any_hashed_password",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     await expect(sut.execute(input)).rejects.toThrow("User already registered");
