@@ -12,9 +12,12 @@ export class RegisterUserUseCase {
       email: input.email,
     });
     if (userWithSameEmail) throw new Error("User already registered");
-    const hashedPassword = await this.passwordHasher.hash({
+    const passwordHashed = await this.passwordHasher.hash({
       password: input.password,
     });
-    await this.userRepo.create(input);
+    await this.userRepo.create({
+      ...input,
+      password: passwordHashed,
+    });
   }
 }
