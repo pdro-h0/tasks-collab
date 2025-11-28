@@ -10,11 +10,15 @@ export namespace CreateUser {
 }
 
 export interface GetUser {
-  getByEmail(input: GetUser.Input): Promise<GetUser.Output | null>;
+  getByEmail(input: GetUser.InputByEmail): Promise<GetUser.Output | null>;
+  getById(input: GetUser.InputById): Promise<GetUser.Output | null>;
 }
 export namespace GetUser {
-  export type Input = {
+  export type InputByEmail = {
     email: string;
+  };
+  export type InputById = {
+    id: string;
   };
   export type Output = {
     id: string;
