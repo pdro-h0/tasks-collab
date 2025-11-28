@@ -4,6 +4,7 @@ import {
   ValidateToken,
 } from "@/contracts/gateways";
 import { GetUser } from "@/contracts/repos";
+import { InvalidRefreshToken, UserNotFound } from "@/domain/errors";
 
 export class RefreshTokenUseCase {
   constructor(
@@ -15,9 +16,9 @@ export class RefreshTokenUseCase {
     const payload = await this.tokenHandler.verify({
       token: input.refreshToken,
     });
-    if (!payload || !payload.userId) throw new Error("Invalid refresh token");
+    if (!payload || !payload.userId) throw new InvalidRefreshToken();
     const user = await this.userRepo.getById({ id: payload.userId });
-    if (!user) throw new Error("User not found");
+    if (!user) throw new UserNotFound();
     const accessTokenExpiresInMs = 900000; //15min
     const refreshTokenExpiresInMs = 604800000; //7days
     const newAccessToken = await this.tokenHandler.generate({

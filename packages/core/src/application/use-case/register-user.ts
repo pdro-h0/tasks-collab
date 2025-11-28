@@ -1,5 +1,6 @@
 import { HashPassword } from "@/contracts/gateways";
 import { CreateUser, GetUser } from "@/contracts/repos";
+import { UserAlreadyRegistered } from "@/domain/errors";
 
 export class RegisterUserUseCase {
   constructor(
@@ -11,7 +12,7 @@ export class RegisterUserUseCase {
     const userWithSameEmail = await this.userRepo.getByEmail({
       email: input.email,
     });
-    if (userWithSameEmail) throw new Error("User already registered");
+    if (userWithSameEmail) throw new UserAlreadyRegistered();
     const passwordHashed = await this.passwordHasher.hash({
       password: input.password,
     });
