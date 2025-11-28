@@ -3,3 +3,4 @@ export * from "./authenticate";
 export * from "./refresh-token";
 export * from "./create-task";
 export * from "./delete-task";
+export * from "./update-task";

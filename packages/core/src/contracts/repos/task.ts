@@ -31,3 +31,20 @@ export namespace GetTask {
     id: string;
   };
 }
+
+export interface UpdateTask {
+  update(input: UpdateTask.Input): Promise<void>;
+}
+export namespace UpdateTask {
+  export type Input = {
+    id: string;
+    taskData: {
+      title?: string;
+      description?: string;
+      status?: "TODO" | "IN_PROGRESS" | "REVIEW" | "DONE";
+      priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+      dueDate?: Date;
+      assignedUserIds?: string[];
+    };
+  };
+}
