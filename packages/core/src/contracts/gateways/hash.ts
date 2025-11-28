@@ -6,3 +6,13 @@ export namespace HashPassword {
     password: string;
   };
 }
+
+export interface ComparePassword {
+  compare(input: ComparePassword.Input): Promise<boolean>;
+}
+export namespace ComparePassword {
+  export type Input = {
+    password: string;
+    hashedPassword: string;
+  };
+}
