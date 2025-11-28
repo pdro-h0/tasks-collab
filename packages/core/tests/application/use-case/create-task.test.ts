@@ -15,6 +15,7 @@ describe("CREATE TASK", () => {
       description: "any_description",
       priority: "LOW",
       dueDate: new Date(),
+      authorId: "any_author_id",
     };
   });
 
@@ -31,6 +32,8 @@ describe("CREATE TASK", () => {
       description: "any_description",
       priority: "LOW",
       dueDate: expect.any(Date),
+      authorId: "any_author_id",
+      assignedUserIds: [],
     });
   });
 });

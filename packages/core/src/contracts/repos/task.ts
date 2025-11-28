@@ -7,5 +7,7 @@ export namespace CreateTask {
     description: string;
     priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
     dueDate: Date;
+    assignedUserIds?: string[];
+    authorId: string;
   };
 }
