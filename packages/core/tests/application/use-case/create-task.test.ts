@@ -1,22 +1,5 @@
-export class CreateTaskUseCase {
-  constructor(private readonly taskRepo: CreateTask) {}
-  async execute(input: CreateTask.Input) {
-    this.taskRepo.create(input);
-    return;
-  }
-}
-
-export interface CreateTask {
-  create(input: CreateTask.Input): Promise<void>;
-}
-export namespace CreateTask {
-  export type Input = {
-    title: string;
-    description: string;
-    priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
-    dueDate: Date;
-  };
-}
+import { CreateTaskUseCase } from "@/application/use-case";
+import { CreateTask } from "@/contracts/repos";
 
 describe("CREATE TASK", () => {
   let sut: CreateTaskUseCase;
