@@ -1,3 +1,5 @@
+import { User } from "@/domain/entities";
+
 export interface CreateUser {
   create(input: CreateUser.Input): Promise<void>;
 }
@@ -10,8 +12,8 @@ export namespace CreateUser {
 }
 
 export interface GetUser {
-  getByEmail(input: GetUser.InputByEmail): Promise<GetUser.Output | null>;
-  getById(input: GetUser.InputById): Promise<GetUser.Output | null>;
+  getByEmail(input: GetUser.InputByEmail): Promise<User | null>;
+  getById(input: GetUser.InputById): Promise<User | null>;
 }
 export namespace GetUser {
   export type InputByEmail = {
@@ -19,12 +21,6 @@ export namespace GetUser {
   };
   export type InputById = {
     id: string;
-  };
-  export type Output = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
   };
 }
 
