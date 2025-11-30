@@ -24,12 +24,12 @@ export namespace GetUser {
   };
 }
 
-export interface AuthenticateUser {
-  authenticate(input: AuthenticateUser.Input): Promise<void>;
-}
 export namespace AuthenticateUser {
   export type Input = {
     email: string;
     password: string;
+  };
+  export type Output = {
+    token: string;
   };
 }
