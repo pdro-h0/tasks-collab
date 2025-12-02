@@ -3,7 +3,7 @@ import {
   CreateUserDto,
   GetUserByEmailDto,
   GetUserByIdDto,
-} from './dto/create-user.dto';
+} from './dto/user.dto';
 import { CreateUser, GetUser } from '@tasks-collab/core/types';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
