@@ -1,0 +1,24 @@
+services:
+  db:
+    image: bitnami/postgresql:latest
+    container_name: db
+    attach: false
+    ports:
+      - '5432:5432'
+    networks:
+      - challenge-network
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRESQL_PASSWORD: password
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_DATABASE: challenge_db
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  challenge-network:
+    driver: bridge
