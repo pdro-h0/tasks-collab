@@ -10,7 +10,7 @@ export class AuthenticateUseCase {
   ) {}
   async execute(input: AuthenticateUser.Input) {
     const user = await this.userRepo.getByEmail({ email: input.email });
-    if (!user) throw new UserNotFound();
+    if (!user) throw new InvalidCredentials();
     const isPasswordValid = await this.passwordHasher.compare({
       password: input.password,
       hashedPassword: user.password,

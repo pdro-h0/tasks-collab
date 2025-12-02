@@ -43,7 +43,9 @@ describe("AUTHENTICATE", () => {
 
   it("Should throw error if GetUser returns null", async () => {
     userRepo.getByEmail.mockResolvedValueOnce(null);
-    await expect(() => sut.execute(input)).rejects.toThrow("User not found");
+    await expect(() => sut.execute(input)).rejects.toThrow(
+      "Invalid credentials",
+    );
   });
 
   it("Should throw error if ComparePassword returns false", async () => {
