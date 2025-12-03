@@ -54,7 +54,12 @@ export class Task {
   })
   dueDate: Date;
 
-  @Column({ type: 'uuid', array: true, default: '{}' })
+  @Column({
+    type: 'uuid',
+    array: true,
+    default: '{}',
+    name: 'assigned_user_ids',
+  })
   assignedUserIds: string[];
 
   @OneToMany(() => Comment, (comment) => comment.id, { cascade: true })
