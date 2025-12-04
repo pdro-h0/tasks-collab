@@ -1,14 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import cookieParser from 'cookie-parser';
-import { CoreExceptionFilter } from './exceptions/core-exception.filter';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.TCP,
+      options: { port: 3333 },
+    },
+  );
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cookieParser());
-  app.useGlobalFilters(new CoreExceptionFilter());
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen();
 }
 bootstrap();

@@ -20,6 +20,7 @@ import {
   JwtTokenHandler,
   RefreshTokenUseCase,
 } from '@tasks-collab/core';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 
 @Controller()
 export class UsersController {
@@ -29,14 +30,19 @@ export class UsersController {
     private readonly tokenHandler: JwtTokenHandler,
   ) {}
 
-  @Post('users')
-  async createUser(@Body() body: CreateUserDto) {
+  @MessagePattern({ cmd: 'user-registered' })
+  async createUser(@Payload() body: CreateUserDto) {
     const useCase = new RegisterUserUseCase(this.userRepo, this.passwordHasher);
-    await useCase.execute({
-      name: body.name,
-      email: body.email,
-      password: body.password,
-    });
+    try {
+      await useCase.execute({
+        name: body.name,
+        email: body.email,
+        password: body.password,
+      });
+      return { success: true };
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
