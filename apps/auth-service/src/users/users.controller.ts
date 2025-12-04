@@ -45,56 +45,37 @@ export class UsersController {
     }
   }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Post('sessions')
-  async createSession(
-    @Body() body: AuthenticateUserDto,
-    @Res({ passthrough: true }) response,
-  ) {
+  @MessagePattern({ cmd: 'user-authenticated' })
+  async createSession(@Body() body: AuthenticateUserDto) {
     const useCase = new AuthenticateUseCase(
       this.userRepo,
       this.passwordHasher,
       this.tokenHandler,
     );
-    const { token } = await useCase.execute({
-      email: body.email,
-      password: body.password,
-    });
-
-    response.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-    });
-
-    return;
+    try {
+      const { token } = await useCase.execute({
+        email: body.email,
+        password: body.password,
+      });
+      return token;
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 
-  @HttpCode(HttpStatus.OK)
-  @Post('refresh')
+  @MessagePattern({ cmd: 'user-refreshed' })
   async refreshSession(
-    @Req() request,
-    @Res({ passthrough: true }) response,
-  ): Promise<AuthResponseDto> {
-    const refreshToken = request.cookies?.accessToken;
-    if (!refreshToken) {
-      console.log(request.cookies);
-      throw new Error(request.cookies);
-    }
-
+    @Payload() refreshToken: string,
+  ): Promise<{ token: string; refreshToken: string }> {
     const useCase = new RefreshTokenUseCase(this.userRepo, this.tokenHandler);
-    const { accessToken, refreshToken: newRefreshToken } =
-      await useCase.execute({
-        refreshToken,
-      });
-
-    response.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/refresh',
-    });
-
-    return { token: accessToken };
+    try {
+      const { accessToken, refreshToken: newRefreshToken } =
+        await useCase.execute({
+          refreshToken,
+        });
+      return { token: accessToken, refreshToken: newRefreshToken };
+    } catch (error) {
+      throw new RpcException(error);
+    }
   }
 }
