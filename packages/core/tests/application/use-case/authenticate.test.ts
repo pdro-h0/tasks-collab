@@ -57,11 +57,16 @@ describe("AUTHENTICATE", () => {
 
   it("Should call GenerateToken with correct input", async () => {
     await sut.execute(input);
-    expect(tokenHandler.generate).toHaveBeenCalledTimes(1);
+    expect(tokenHandler.generate).toHaveBeenCalledTimes(2);
     expect(tokenHandler.generate).toHaveBeenCalledWith({
       userId: "any_id",
       email: "any_email",
       expiresInMs: 900000,
+    });
+    expect(tokenHandler.generate).toHaveBeenCalledWith({
+      userId: "any_id",
+      email: "any_email",
+      expiresInMs: 604800000,
     });
   });
 });

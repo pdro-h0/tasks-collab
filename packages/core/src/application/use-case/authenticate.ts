@@ -16,11 +16,16 @@ export class AuthenticateUseCase {
       hashedPassword: user.password,
     });
     if (!isPasswordValid) throw new InvalidCredentials();
-    const token = await this.tokenHandler.generate({
+    const accessToken = await this.tokenHandler.generate({
       userId: user.id,
       email: user.email,
       expiresInMs: 900000, //15min
     });
-    return { token };
+    const refreshToken = await this.tokenHandler.generate({
+      userId: user.id,
+      email: user.email,
+      expiresInMs: 604800000, //7days
+    });
+    return { accessToken, refreshToken };
   }
 }

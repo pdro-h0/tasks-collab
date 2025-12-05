@@ -23,7 +23,7 @@ export class UserController {
   ) {}
 
   @Post('users')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async createUser(@Body() req: CreateUserDto) {
     const result = await firstValueFrom(
       this.userClient.send({ cmd: 'user-registered' }, req),
@@ -32,30 +32,28 @@ export class UserController {
   }
 
   @Post('sessions')
-  @HttpCode(HttpStatus.NO_CONTENT)
   async createSession(
     @Body() req: AuthenticateUserDto,
     @Res({ passthrough: true }) response,
   ) {
-    const result = await firstValueFrom(
+    const { accessToken, refreshToken } = await firstValueFrom(
       this.userClient.send({ cmd: 'user-authenticated' }, req),
     );
-    response.cookie('accessToken', result, {
+
+    response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
+      path: 'api/refresh',
     });
-    return result;
+    return { accessToken };
   }
 
   @Post('refresh')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async refreshSession(
-    @Req() req,
-    @Res({ passthrough: true }) response,
-  ): Promise<AuthResponseDto> {
+  @HttpCode(HttpStatus.OK)
+  async refreshSession(@Req() req, @Res({ passthrough: true }) response) {
     const oldRefreshToken = req.cookies?.refreshToken;
-    const { token, refreshToken } = await firstValueFrom(
+    const { accessToken, refreshToken } = await firstValueFrom(
       this.userClient.send({ cmd: 'user-refreshed' }, oldRefreshToken),
     );
     response.cookie('refreshToken', refreshToken, {
@@ -64,6 +62,6 @@ export class UserController {
       sameSite: 'lax',
       path: 'api/refresh',
     });
-    return token;
+    return { accessToken };
   }
 }

@@ -53,11 +53,11 @@ export class UsersController {
       this.tokenHandler,
     );
     try {
-      const { token } = await useCase.execute({
+      const { accessToken, refreshToken } = await useCase.execute({
         email: body.email,
         password: body.password,
       });
-      return token;
+      return { accessToken, refreshToken };
     } catch (error) {
       throw new RpcException(error);
     }
@@ -66,14 +66,14 @@ export class UsersController {
   @MessagePattern({ cmd: 'user-refreshed' })
   async refreshSession(
     @Payload() refreshToken: string,
-  ): Promise<{ token: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const useCase = new RefreshTokenUseCase(this.userRepo, this.tokenHandler);
     try {
       const { accessToken, refreshToken: newRefreshToken } =
         await useCase.execute({
           refreshToken,
         });
-      return { token: accessToken, refreshToken: newRefreshToken };
+      return { accessToken, refreshToken: newRefreshToken };
     } catch (error) {
       throw new RpcException(error);
     }
