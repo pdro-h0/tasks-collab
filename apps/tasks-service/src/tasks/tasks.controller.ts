@@ -1,43 +1,56 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { TasksRepository } from './tasks.repository';
-import { CreateTaskDto } from './dto/task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
-import type { Request } from 'express';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { CreateTaskDto, DeleteTaskDto, UpdateTaskDto } from './dto/task.dto';
+import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import {
+    CreateTaskUseCase,
+    UpdateTaskUseCase,
+    DeleteTaskUseCase,
+} from '@tasks-collab/core';
 
-@UseGuards(AuthGuard)
-@Controller('tasks')
+@Controller()
 export class TasksController {
-  constructor(private readonly tasksRepo: TasksRepository) {}
+    constructor(private readonly tasksRepo: TasksRepository) {}
 
-  @Post()
-  create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
-    const userId = req.user.userId;
-    return this.tasksRepo.create({ ...createTaskDto, authorId: userId });
-  }
+    @MessagePattern({ cmd: 'task-created' })
+    async create(@Payload() payload: { body: CreateTaskDto; userId: string }) {
+        const useCase = new CreateTaskUseCase(this.tasksRepo);
+        try {
+            await useCase.execute({
+                ...payload.body,
+                authorId: payload.userId,
+            });
+            return { success: true };
+        } catch (error) {
+            throw new RpcException(error);
+        }
+    }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tasksRepo.getById({ id });
-  }
+    @MessagePattern({ cmd: 'task-updated' })
+    async update(@Payload() payload: UpdateTaskDto) {
+        const useCase = new UpdateTaskUseCase(this.tasksRepo);
+        try {
+            await useCase.execute({
+                id: payload.id,
+                taskData: payload.taskData,
+            });
+            return { success: true };
+        } catch (error) {
+            console.log(payload);
+            throw new RpcException(error);
+        }
+    }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksRepo.update({ id, taskData: updateTaskDto });
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksRepo.delete({ id });
-  }
+    @MessagePattern({ cmd: 'task-deleted' })
+    async remove(@Payload() { id }: DeleteTaskDto) {
+        const useCase = new DeleteTaskUseCase(this.tasksRepo);
+        try {
+            await useCase.execute({
+                id,
+            });
+            return { success: true };
+        } catch (error) {
+            throw new RpcException(error);
+        }
+    }
 }
