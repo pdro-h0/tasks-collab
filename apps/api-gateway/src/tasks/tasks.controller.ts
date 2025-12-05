@@ -1,0 +1,69 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { UpdateTaskDataDto } from './dto/task.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+
+@UseGuards(AuthGuard)
+@Controller('tasks')
+export class TasksController {
+  constructor(
+    @Inject('TASKS-SERVICE') private readonly taskClient: ClientProxy,
+  ) {}
+
+  @Post()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async createTask(
+    @Body()
+    body: {
+      title: string;
+      description: string;
+      priority: string;
+      dueDate: Date;
+      assignedUserIds?: string[];
+    },
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    const result = await firstValueFrom(
+      this.taskClient.send({ cmd: 'task-created' }, { body, userId }),
+    );
+    return result;
+  }
+
+  @Patch(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateTask(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDataDto,
+  ) {
+    const payload = { id, taskData: updateTaskDto };
+    console.log(payload);
+    const result = await firstValueFrom(
+      this.taskClient.send({ cmd: 'task-updated' }, payload),
+    );
+    return result;
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteTask(@Param('id') id: string) {
+    const payload = { id };
+    const result = await firstValueFrom(
+      this.taskClient.send({ cmd: 'task-deleted' }, payload),
+    );
+    return result;
+  }
+}
