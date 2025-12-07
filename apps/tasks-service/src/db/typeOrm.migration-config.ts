@@ -9,18 +9,17 @@ config();
 
 const configService = new ConfigService();
 const dataSourceOptions: DataSourceOptions = {
-  type: 'postgres',
-  host: configService.get<string>('DB_HOST'),
-  port: Number(configService.get<number>('DB_PORT')),
-  username: configService.get<string>('DB_USERNAME'),
-  password: configService.get<string>('DB_PASSWORD'),
-  database: configService.get<string>('DB_NAME'),
-  entities: [Comment, TaskHistory, Task],
-  migrations: [__dirname + '/migrations/*.{js,ts}'],
-  synchronize: false,
-  migrationsRun: true,
-  logging: true,
+    type: 'postgres',
+    host: configService.get<string>('DB_HOST'),
+    port: Number(configService.get<number>('DB_PORT')),
+    username: configService.get<string>('DB_USERNAME'),
+    password: configService.get<string>('DB_PASSWORD'),
+    database: configService.get<string>('DB_NAME'),
+    entities: [Comment, TaskHistory, Task],
+    migrations: [__dirname + '/migrations/*.{js,ts}'],
+    synchronize: false,
+    migrationsRun: true,
+    logging: true,
 };
-console.log(dataSourceOptions);
 
 export const dataSource = new DataSource(dataSourceOptions);

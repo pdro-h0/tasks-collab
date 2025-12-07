@@ -36,7 +36,6 @@ export class TasksController {
             });
             return { success: true };
         } catch (error) {
-            console.log(payload);
             throw new RpcException(error);
         }
     }
