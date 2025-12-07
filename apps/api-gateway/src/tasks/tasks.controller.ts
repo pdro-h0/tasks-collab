@@ -14,9 +14,10 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { UpdateTaskDataDto } from './dto/task.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('tasks')
 export class TasksController {
   constructor(
@@ -50,7 +51,6 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDataDto,
   ) {
     const payload = { id, taskData: updateTaskDto };
-    console.log(payload);
     const result = await firstValueFrom(
       this.taskClient.send({ cmd: 'task-updated' }, payload),
     );

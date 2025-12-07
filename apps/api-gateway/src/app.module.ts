@@ -4,13 +4,13 @@ import { AppService } from './app.service';
 import { UserController } from './user/user.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TasksController } from './tasks/tasks.controller';
-import { JwtTokenHandler } from '@tasks-collab/core';
 
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     ClientsModule.register([
       {
         name: 'AUTH-SERVICE',
@@ -28,21 +28,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
       },
     ]),
+    AuthModule,
   ],
   controllers: [AppController, UserController, TasksController],
-  providers: [
-    AppService,
-    {
-      provide: JwtTokenHandler,
-      useFactory: async (configService: ConfigService) => {
-        const secret = configService.get<string>('JWT_SECRET');
-        if (!secret) {
-          throw new Error('JWT_SECRET is not defined in environment variables');
-        }
-        return new JwtTokenHandler(secret);
-      },
-      inject: [ConfigService],
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
