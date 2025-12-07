@@ -10,11 +10,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import {
-  AuthenticateUserDto,
-  AuthResponseDto,
-  CreateUserDto,
-} from './dto/user.dto';
+import { AuthenticateUserDto, CreateUserDto } from './dto/user.dto';
 
 @Controller()
 export class UserController {
@@ -23,7 +19,7 @@ export class UserController {
   ) {}
 
   @Post('users')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() req: CreateUserDto) {
     const result = await firstValueFrom(
       this.userClient.send({ cmd: 'user-registered' }, req),
