@@ -13,9 +13,8 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { UpdateTaskDataDto } from './dto/task.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateTaskDto, UpdateTaskDataDto } from './dto/task.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tasks')
@@ -28,18 +27,13 @@ export class TasksController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async createTask(
     @Body()
-    body: {
-      title: string;
-      description: string;
-      priority: string;
-      dueDate: Date;
-      assignedUserIds?: string[];
-    },
+    body: CreateTaskDto,
     @Req() req,
   ) {
     const userId = req.user.userId;
+    const payload = { body, userId };
     const result = await firstValueFrom(
-      this.taskClient.send({ cmd: 'task-created' }, { body, userId }),
+      this.taskClient.send({ cmd: 'task-created' }, payload),
     );
     return result;
   }

@@ -1,14 +1,14 @@
+import { Type } from 'class-transformer';
 import {
-    IsString,
-    IsNotEmpty,
-    IsDateString,
     IsArray,
-    IsOptional,
+    IsDateString,
     IsIn,
+    IsNotEmpty,
+    IsOptional,
+    IsString,
     IsUUID,
     ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
     @IsString()
@@ -33,6 +33,16 @@ export class CreateTaskDto {
     @IsString()
     @IsUUID('4')
     authorId: string;
+}
+
+export class createTaskDataDTO {
+    @Type(() => CreateTaskDto)
+    @ValidateNested()
+    body: Omit<CreateTaskDto, 'authorId'>;
+
+    @IsString()
+    @IsUUID('4')
+    userId: string;
 }
 
 class UpdateTaskDataDto {

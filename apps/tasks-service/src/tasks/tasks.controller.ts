@@ -1,19 +1,19 @@
 import { Controller } from '@nestjs/common';
-import { TasksRepository } from './tasks.repository';
-import { CreateTaskDto, DeleteTaskDto, UpdateTaskDto } from './dto/task.dto';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
 import {
     CreateTaskUseCase,
-    UpdateTaskUseCase,
     DeleteTaskUseCase,
+    UpdateTaskUseCase,
 } from '@tasks-collab/core';
+import { DeleteTaskDto, UpdateTaskDto } from './dto/task.dto';
+import { TasksRepository } from './tasks.repository';
 
 @Controller()
 export class TasksController {
     constructor(private readonly tasksRepo: TasksRepository) {}
 
     @MessagePattern({ cmd: 'task-created' })
-    async create(@Payload() payload: { body: CreateTaskDto; userId: string }) {
+    async create(@Payload() payload) {
         const useCase = new CreateTaskUseCase(this.tasksRepo);
         try {
             await useCase.execute({
