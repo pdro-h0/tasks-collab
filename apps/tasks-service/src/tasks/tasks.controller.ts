@@ -1,5 +1,10 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import { Controller, Inject } from '@nestjs/common';
+import {
+    ClientProxy,
+    MessagePattern,
+    Payload,
+    RpcException,
+} from '@nestjs/microservices';
 import {
     CreateTaskUseCase,
     DeleteTaskUseCase,
@@ -10,7 +15,10 @@ import { TasksRepository } from './tasks.repository';
 
 @Controller()
 export class TasksController {
-    constructor(private readonly tasksRepo: TasksRepository) {}
+    constructor(
+        private readonly tasksRepo: TasksRepository,
+        @Inject('TASKS_QUEUE') private readonly client: ClientProxy,
+    ) {}
 
     @MessagePattern({ cmd: 'task-created' })
     async create(@Payload() payload) {
@@ -20,6 +28,7 @@ export class TasksController {
                 ...payload.body,
                 authorId: payload.userId,
             });
+            this.client.emit('task:created', payload);
             return { success: true };
         } catch (error) {
             throw new RpcException(error);
@@ -34,6 +43,7 @@ export class TasksController {
                 id: payload.id,
                 taskData: payload.taskData,
             });
+            this.client.emit('task:updated', payload);
             return { success: true };
         } catch (error) {
             throw new RpcException(error);

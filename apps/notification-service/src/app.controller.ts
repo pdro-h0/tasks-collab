@@ -15,9 +15,31 @@ export class RabbitMQController {
     private readonly logger = new Logger(RabbitMQController.name);
 
     @MessagePattern('task:created')
-    async handleNotification(@Payload() data: any, @Ctx() context: RmqContext) {
+    async taskCreated(@Payload() data: any, @Ctx() context: RmqContext) {
         try {
-            this.logger.log(`Received notification: ${JSON.stringify(data)}`);
+            this.logger.log(
+                `task creatad notification: ${JSON.stringify(data)}`,
+            );
+            const channel = context.getChannelRef();
+            const originalMsg = context.getMessage();
+
+            channel.ack(originalMsg);
+            return { status: 'processed', data };
+        } catch (error) {
+            this.logger.error(
+                `Error processing notification: ${error.message}`,
+                error.stack,
+            );
+            throw error;
+        }
+    }
+
+    @MessagePattern('task:updated')
+    async taskUpdated(@Payload() data: any, @Ctx() context: RmqContext) {
+        try {
+            this.logger.log(
+                `task updated notification: ${JSON.stringify(data)}`,
+            );
             const channel = context.getChannelRef();
             const originalMsg = context.getMessage();
 
