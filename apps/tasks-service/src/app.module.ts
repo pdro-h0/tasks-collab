@@ -1,19 +1,27 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksModule } from './tasks/tasks.module';
 import { DbModule } from './db/db.module';
-import { ConfigModule } from '@nestjs/config';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    DbModule,
-    TasksModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        ClientsModule.register([
+            {
+                name: 'TASKS-SERVICE',
+                transport: Transport.TCP,
+                options: { port: 3000 },
+            },
+        ]),
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        DbModule,
+        TasksModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}
