@@ -55,6 +55,7 @@ export interface CommentTask {
 export namespace CommentTask {
   export type Input = {
     taskId: string;
+    userId: string;
     content: string;
   };
 }

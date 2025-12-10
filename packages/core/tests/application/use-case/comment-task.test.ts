@@ -26,6 +26,7 @@ describe("COMMENT TASK", () => {
     };
     input = {
       taskId: "any_task_id",
+      userId: "any_user_id",
       content: "any_content",
     };
   });
@@ -52,6 +53,7 @@ describe("COMMENT TASK", () => {
     expect(taskRepo.comment).toHaveBeenCalledTimes(1);
     expect(taskRepo.comment).toHaveBeenCalledWith({
       taskId: "any_task_id",
+      userId: "any_user_id",
       content: "any_content",
     });
   });
