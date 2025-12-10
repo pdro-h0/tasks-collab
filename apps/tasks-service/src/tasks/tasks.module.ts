@@ -15,11 +15,13 @@ import { TasksRepository } from './tasks.repository';
         TypeOrmModule.forFeature([Comment, TaskHistory, Task]),
         ClientsModule.register([
             {
-                name: 'TASKS_QUEUE',
+                name: 'NOTIFICATIONS_QUEUE',
                 transport: Transport.RMQ,
                 options: {
                     urls: ['amqp://admin:admin@localhost:5672'],
-                    queue: 'tasks_queue',
+                    queue: 'notifications_queue',
+                    prefetchCount: 1,
+                    noAck: true,
                     queueOptions: {
                         durable: true,
                     },

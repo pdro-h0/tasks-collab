@@ -1,18 +1,17 @@
 import {
-  Body,
-  Controller,
-  Delete,
-  HttpCode,
-  HttpStatus,
-  Inject,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
+    Body,
+    Controller,
+    Delete,
+    HttpCode,
+    HttpStatus,
+    Inject,
+    Param,
+    Patch,
+    Post,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateTaskDto, UpdateTaskDataDto } from './dto/task.dto';
 
@@ -24,7 +23,6 @@ export class TasksController {
   ) {}
 
   @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
   async createTask(
     @Body()
     body: CreateTaskDto,
@@ -32,10 +30,8 @@ export class TasksController {
   ) {
     const userId = req.user.userId;
     const payload = { body, userId };
-    const result = await firstValueFrom(
-      this.taskClient.send({ cmd: 'task-created' }, payload),
-    );
-    return result;
+    this.taskClient.emit('task:created', payload);
+    return { status: 'processing' };
   }
 
   @Patch(':id')
@@ -45,19 +41,29 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDataDto,
   ) {
     const payload = { id, taskData: updateTaskDto };
-    const result = await firstValueFrom(
-      this.taskClient.send({ cmd: 'task-updated' }, payload),
-    );
-    return result;
+    this.taskClient.emit('task:updated', payload);
+    return { status: 'processing' };
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteTask(@Param('id') id: string) {
     const payload = { id };
-    const result = await firstValueFrom(
-      this.taskClient.send({ cmd: 'task-deleted' }, payload),
-    );
-    return result;
+    this.taskClient.emit('task:deleted', payload);
+    return { status: 'processing' };
+  }
+
+  @Post('new-comment/:taskId')
+  async commentTask(
+    @Body()
+    body,
+    @Param('taskId') taskId: string,
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+    const payload = { body, taskId, userId };
+    console.log(payload)
+    this.taskClient.emit('comment:new', payload);
+    return { status: 'processing' };
   }
 }

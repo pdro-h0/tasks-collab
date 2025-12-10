@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtTokenHandler } from '@tasks-collab/core';
-import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt-strategy';
 
 @Module({
