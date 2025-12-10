@@ -14,7 +14,7 @@ import {
     DeleteTaskUseCase,
     UpdateTaskUseCase,
 } from '@tasks-collab/core';
-import { DeleteTaskDto, UpdateTaskDto } from './dto/task.dto';
+import { CommentTaskDto, DeleteTaskDto, UpdateTaskDto } from './dto/task.dto';
 import { TasksRepository } from './tasks.repository';
 
 @Controller()
@@ -83,7 +83,10 @@ export class TasksController {
     }
 
     @MessagePattern('comment:new')
-    async comment(@Payload() payload, @Ctx() context: RmqContext) {
+    async comment(
+        @Payload() payload: CommentTaskDto,
+        @Ctx() context: RmqContext,
+    ) {
         const useCase = new CommentTaskUseCase(this.tasksRepo);
         const channel = context.getChannelRef();
         const originalMsg = context.getMessage();

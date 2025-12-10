@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
   ValidateNested,
 } from 'class-validator';
 
@@ -72,6 +73,13 @@ export class TaskIdParamDto {
   @IsString()
   @IsUUID('4')
   id: string;
+}
+
+export class CommentTaskBodyDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(1000, { message: 'Comment must be less than 1000 characters' })
+  content: string;
 }
 
 export class GetTaskByIdDto extends TaskIdParamDto {}

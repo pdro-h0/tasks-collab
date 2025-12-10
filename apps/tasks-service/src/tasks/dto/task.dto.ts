@@ -93,13 +93,23 @@ export class GetTaskByIdDto extends TaskIdParamDto {}
 
 export class DeleteTaskDto extends TaskIdParamDto {}
 
+export class CommentTaskBodyDto {
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(1000, { message: 'Comment must be less than 1000 characters' })
+    content: string;
+}
+
 export class CommentTaskDto {
+    @Type(() => CommentTaskBodyDTO)
+    @ValidateNested()
+    body: CommentTaskBodyDTO;
+
     @IsString()
     @IsUUID('4')
     taskId: string;
 
     @IsString()
-    @IsNotEmpty()
-    @MaxLength(1000, { message: 'Comment must be less than 1000 characters' })
-    content: string;
+    @IsUUID('4')
+    userId: string;
 }

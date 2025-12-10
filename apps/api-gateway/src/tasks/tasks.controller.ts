@@ -1,19 +1,23 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    HttpCode,
-    HttpStatus,
-    Inject,
-    Param,
-    Patch,
-    Post,
-    Req,
-    UseGuards,
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateTaskDto, UpdateTaskDataDto } from './dto/task.dto';
+import {
+  CommentTaskBodyDto,
+  CreateTaskDto,
+  UpdateTaskDataDto,
+} from './dto/task.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tasks')
@@ -56,13 +60,13 @@ export class TasksController {
   @Post('new-comment/:taskId')
   async commentTask(
     @Body()
-    body,
+    body: CommentTaskBodyDto,
     @Param('taskId') taskId: string,
     @Req() req,
   ) {
     const userId = req.user.userId;
     const payload = { body, taskId, userId };
-    console.log(payload)
+    console.log(payload);
     this.taskClient.emit('comment:new', payload);
     return { status: 'processing' };
   }

@@ -27,7 +27,11 @@ export class TasksRepository
         @InjectRepository(Comment)
         private readonly commentRepo: Repository<Comment>,
     ) {}
-    async comment(input): Promise<void> {
+    async comment(input: {
+        content: string;
+        userId: string;
+        taskId: string;
+    }): Promise<void> {
         await this.commentRepo.save(input);
     }
     async getById(input: GetTaskByIdDto): Promise<Task | null> {
