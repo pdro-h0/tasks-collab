@@ -8,6 +8,7 @@ import {
 } from "./gateways";
 import {
   AuthenticateUser,
+  CommentTask,
   CreateTask,
   CreateUser,
   DeleteTask,
@@ -17,17 +18,18 @@ import {
 } from "./repos/index";
 
 export {
-  type ComparePassword,
-  type GenerateToken,
-  type HashPassword,
-  type RefreshToken,
-  type TokenPayload,
-  type ValidateToken,
   type AuthenticateUser,
+  type CommentTask,
+  type ComparePassword,
   type CreateTask,
   type CreateUser,
   type DeleteTask,
+  type GenerateToken,
   type GetTask,
   type GetUser,
+  type HashPassword,
+  type RefreshToken,
+  type TokenPayload,
   type UpdateTask,
+  type ValidateToken,
 };

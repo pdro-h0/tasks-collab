@@ -48,3 +48,13 @@ export namespace UpdateTask {
     };
   };
 }
+
+export interface CommentTask {
+  comment(input: CommentTask.Input): Promise<void>;
+}
+export namespace CommentTask {
+  export type Input = {
+    taskId: string;
+    content: string;
+  };
+}

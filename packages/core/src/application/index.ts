@@ -1,17 +1,19 @@
 import {
-  RegisterUserUseCase,
   AuthenticateUseCase,
+  CommentTaskUseCase,
   CreateTaskUseCase,
   DeleteTaskUseCase,
   RefreshTokenUseCase,
+  RegisterUserUseCase,
   UpdateTaskUseCase,
 } from "./use-case/index";
 
 export {
-  RegisterUserUseCase,
   AuthenticateUseCase,
+  CommentTaskUseCase,
   CreateTaskUseCase,
   DeleteTaskUseCase,
   RefreshTokenUseCase,
+  RegisterUserUseCase,
   UpdateTaskUseCase,
 };
