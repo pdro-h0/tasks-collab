@@ -36,7 +36,7 @@ Plataforma colaborativa para gerenciamento de tarefas em tempo real, desenvolvid
 | Task Service | 2 dia (~7h/dia) |
 | Notification Service | 1 dias (~9h) |
 | API Gateway | 1 dia (~7h) |
-| Configuração do RabbitMQ  | 3 dias (~9h/dia) |
+| Configuração do RabbitMQ + WebSockets  | 3 dias (~9h/dia) |
 | Notidication Service | 1 dia (~9h/dia)
 
 ## Observação
